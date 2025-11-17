@@ -79,6 +79,22 @@ const Index = () => {
     checkExistingRegistration();
   }, [navigate]);
 
+  const isFormValid = () => {
+    return (
+      formData.nama.trim() !== "" &&
+      formData.nim.trim() !== "" &&
+      formData.semester !== "" &&
+      formData.ipk !== "" &&
+      formData.pengalaman.trim() !== "" &&
+      formData.visi_misi.trim() !== "" &&
+      formData.nomor_wa.trim() !== "" &&
+      formData.email.trim() !== "" &&
+      formData.jenis_kelamin !== "" &&
+      foto !== null &&
+      sertifikat.length > 0
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -335,19 +351,26 @@ const Index = () => {
                     <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-600" />
                     Semester
                   </Label>
-                  <Input
-                    id="semester"
-                    type="number"
-                    required
-                    min="1"
-                    max="14"
+                  <Select
                     value={formData.semester}
-                    onChange={(e) =>
-                      setFormData({ ...formData, semester: e.target.value })
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, semester: value })
                     }
-                    placeholder="Contoh: 5"
-                    className="h-10 sm:h-12 text-sm sm:text-base border-2 border-gray-200 focus:border-indigo-500 rounded-lg sm:rounded-xl transition-colors"
-                  />
+                  >
+                    <SelectTrigger className="h-10 sm:h-12 text-sm sm:text-base border-2 border-gray-200 focus:border-indigo-500 rounded-lg sm:rounded-xl">
+                      <SelectValue placeholder="Pilih semester" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">Semester 1</SelectItem>
+                      <SelectItem value="2">Semester 2</SelectItem>
+                      <SelectItem value="3">Semester 3</SelectItem>
+                      <SelectItem value="4">Semester 4</SelectItem>
+                      <SelectItem value="5">Semester 5</SelectItem>
+                      <SelectItem value="6">Semester 6</SelectItem>
+                      <SelectItem value="7">Semester 7</SelectItem>
+                      <SelectItem value="8">Semester 8</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="group">
@@ -514,8 +537,8 @@ const Index = () => {
             <div className="pt-4 sm:pt-6">
               <Button
                 type="submit"
-                className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                disabled={loading}
+                className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={loading || !isFormValid()}
               >
                 {loading ? (
                   <>
