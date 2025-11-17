@@ -374,7 +374,6 @@ const Index = () => {
                       <SelectItem value="1">Semester 1</SelectItem>
                       <SelectItem value="3">Semester 3</SelectItem>
                       <SelectItem value="5">Semester 5</SelectItem>
-                      <SelectItem value="7">Semester 7</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -422,7 +421,7 @@ const Index = () => {
                   className="text-sm sm:text-base font-semibold text-gray-700 mb-2 flex items-center gap-2"
                 >
                   <Award className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-600" />
-                  Pengalaman Organisasi (Minimal 10 kata)
+                  Pengalaman Organisasi
                 </Label>
                 <Textarea
                   id="pengalaman"
@@ -452,7 +451,7 @@ const Index = () => {
                   className="text-sm sm:text-base font-semibold text-gray-700 mb-2 flex items-center gap-2"
                 >
                   <Target className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-600" />
-                  Visi dan Misi (Minimal 20 kata)
+                  Visi dan Misi
                 </Label>
                 <Textarea
                   id="visi_misi"
@@ -519,7 +518,7 @@ const Index = () => {
                     className="text-sm sm:text-base font-semibold text-gray-700 mb-2 flex items-center gap-2"
                   >
                     <Phone className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-600" />
-                    Nomor WhatsApp (Minimal 11 angka)
+                    Nomor WhatsApp
                   </Label>
                   <Input
                     id="nomor_wa"
