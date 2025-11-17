@@ -26,8 +26,36 @@ export default function AdminLogin() {
 
       if (error) {
         setError(error.message);
-      } else if (data.user) {
-        // Login berhasil, redirect ke admin dashboard
+        setLoading(false);
+        return;
+      }
+
+      if (data.user) {
+        // Cek role user dari tabel profiles
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", data.user.id)
+          .single();
+
+        if (profileError) {
+          setError("Gagal memverifikasi role pengguna");
+          await supabase.auth.signOut();
+          setLoading(false);
+          return;
+        }
+
+        // Cek apakah user memiliki role admin
+        if (profile?.role !== "admin") {
+          setError(
+            "Akses ditolak. Hanya admin yang dapat login ke halaman ini."
+          );
+          await supabase.auth.signOut();
+          setLoading(false);
+          return;
+        }
+
+        // Login berhasil dan role adalah admin
         navigate("/admin");
       }
     } catch (err) {
