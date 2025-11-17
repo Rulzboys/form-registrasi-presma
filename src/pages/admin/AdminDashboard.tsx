@@ -22,7 +22,7 @@ const AdminDashboard = () => {
         } = await supabase.auth.getUser();
 
         if (authError || !user) {
-          navigate("/admin/login");
+          navigate("/admin-login");
           return;
         }
 
@@ -36,7 +36,7 @@ const AdminDashboard = () => {
         if (profileError || profile?.role !== "admin") {
           // Jika bukan admin, logout dan redirect
           await supabase.auth.signOut();
-          navigate("/admin/login");
+          navigate("/admin-login");
           return;
         }
 
