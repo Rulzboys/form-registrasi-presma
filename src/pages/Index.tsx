@@ -80,14 +80,24 @@ const Index = () => {
   }, [navigate]);
 
   const isFormValid = () => {
+    const pengalamanWordCount = formData.pengalaman
+      .trim()
+      .split(/\s+/)
+      .filter((word) => word.length > 0).length;
+    const visiMisiWordCount = formData.visi_misi
+      .trim()
+      .split(/\s+/)
+      .filter((word) => word.length > 0).length;
+    const nomorWaLength = formData.nomor_wa.trim().replace(/\D/g, "").length;
+
     return (
       formData.nama.trim() !== "" &&
       formData.nim.trim() !== "" &&
       formData.semester !== "" &&
       formData.ipk !== "" &&
-      formData.pengalaman.trim() !== "" &&
-      formData.visi_misi.trim() !== "" &&
-      formData.nomor_wa.trim() !== "" &&
+      pengalamanWordCount >= 10 &&
+      visiMisiWordCount >= 20 &&
+      nomorWaLength >= 11 &&
       formData.email.trim() !== "" &&
       formData.jenis_kelamin !== "" &&
       foto !== null &&
@@ -205,7 +215,7 @@ const Index = () => {
           </p>
           <div className="mt-4 sm:mt-6 flex items-center justify-center gap-2 text-xs sm:text-sm text-indigo-600">
             <BookOpen className="w-3 h-3 sm:w-4 sm:h-4" />
-            <span>Tahun Akademik 2025/2026</span>
+            <span>Tahun 2025/2026</span>
           </div>
         </div>
 
@@ -362,13 +372,9 @@ const Index = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="1">Semester 1</SelectItem>
-                      <SelectItem value="2">Semester 2</SelectItem>
                       <SelectItem value="3">Semester 3</SelectItem>
-                      <SelectItem value="4">Semester 4</SelectItem>
                       <SelectItem value="5">Semester 5</SelectItem>
-                      <SelectItem value="6">Semester 6</SelectItem>
                       <SelectItem value="7">Semester 7</SelectItem>
-                      <SelectItem value="8">Semester 8</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -416,7 +422,7 @@ const Index = () => {
                   className="text-sm sm:text-base font-semibold text-gray-700 mb-2 flex items-center gap-2"
                 >
                   <Award className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-600" />
-                  Pengalaman Organisasi
+                  Pengalaman Organisasi (Minimal 10 kata)
                 </Label>
                 <Textarea
                   id="pengalaman"
@@ -429,6 +435,15 @@ const Index = () => {
                   rows={5}
                   className="text-sm sm:text-base border-2 border-gray-200 focus:border-indigo-500 rounded-lg sm:rounded-xl transition-colors resize-none"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  {
+                    formData.pengalaman
+                      .trim()
+                      .split(/\s+/)
+                      .filter((word) => word.length > 0).length
+                  }{" "}
+                  / 10 kata
+                </p>
               </div>
 
               <div className="group">
@@ -437,7 +452,7 @@ const Index = () => {
                   className="text-sm sm:text-base font-semibold text-gray-700 mb-2 flex items-center gap-2"
                 >
                   <Target className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-600" />
-                  Visi dan Misi
+                  Visi dan Misi (Minimal 20 kata)
                 </Label>
                 <Textarea
                   id="visi_misi"
@@ -450,6 +465,15 @@ const Index = () => {
                   rows={6}
                   className="text-sm sm:text-base border-2 border-gray-200 focus:border-indigo-500 rounded-lg sm:rounded-xl transition-colors resize-none"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  {
+                    formData.visi_misi
+                      .trim()
+                      .split(/\s+/)
+                      .filter((word) => word.length > 0).length
+                  }{" "}
+                  / 20 kata
+                </p>
               </div>
             </div>
 
@@ -464,7 +488,7 @@ const Index = () => {
                     Sertifikat
                   </Label>
                   <p className="text-xs sm:text-sm text-gray-600 mt-0.5">
-                    Upload sertifikat organisasi atau kegiatan (minimal 1 file)
+                    Upload sertifikat organisasi atau kegiatan (Bisa lebih dari 1 file)
                   </p>
                 </div>
               </div>
@@ -495,7 +519,7 @@ const Index = () => {
                     className="text-sm sm:text-base font-semibold text-gray-700 mb-2 flex items-center gap-2"
                   >
                     <Phone className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-600" />
-                    Nomor WhatsApp
+                    Nomor WhatsApp (Minimal 11 angka)
                   </Label>
                   <Input
                     id="nomor_wa"
@@ -508,6 +532,10 @@ const Index = () => {
                     placeholder="Contoh: 081234567890"
                     className="h-10 sm:h-12 text-sm sm:text-base border-2 border-gray-200 focus:border-indigo-500 rounded-lg sm:rounded-xl transition-colors"
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    {formData.nomor_wa.trim().replace(/\D/g, "").length} / 11
+                    angka
+                  </p>
                 </div>
 
                 <div className="group">
