@@ -371,7 +371,6 @@ const Index = () => {
                       <SelectValue placeholder="Pilih semester" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="1">Semester 1</SelectItem>
                       <SelectItem value="3">Semester 3</SelectItem>
                       <SelectItem value="5">Semester 5</SelectItem>
                     </SelectContent>
@@ -384,7 +383,7 @@ const Index = () => {
                     className="text-sm sm:text-base font-semibold text-gray-700 mb-2 flex items-center gap-2"
                   >
                     <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-600" />
-                    IPK Semester Sebelumnya
+                    IP Semester Sebelumnya
                   </Label>
                   <Input
                     id="ipk"
