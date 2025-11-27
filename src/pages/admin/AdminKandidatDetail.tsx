@@ -23,6 +23,9 @@ import {
   Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import { Download } from "lucide-react";
 
 interface KandidatDetail {
   id: string;
@@ -55,6 +58,182 @@ const AdminKandidatDetail = () => {
   const [uploadingSertifikat, setUploadingSertifikat] = useState<number | null>(
     null
   );
+
+  const generatePDF = async () => {
+    if (!kandidat) return;
+
+    const pdfContent = document.createElement("div");
+    pdfContent.style.position = "absolute";
+    pdfContent.style.left = "-9999px";
+    pdfContent.style.width = "210mm"; // A4 width
+    pdfContent.style.padding = "15mm";
+    pdfContent.style.backgroundColor = "#ffffff";
+    pdfContent.style.fontFamily = "Arial, sans-serif";
+    pdfContent.style.boxSizing = "border-box";
+
+    pdfContent.innerHTML = `
+    <div style="width: 100%;">
+      <!-- Header dengan Foto -->
+      <div style="display: flex; gap: 15px; margin-bottom: 15px; align-items: flex-start;">
+        <div style="flex-shrink: 0;">
+          <img src="${kandidat.foto_url}" 
+               style="width: 120px; height: 120px; object-fit: cover; border-radius: 6px; border: 2px solid #e5e7eb;" 
+               crossorigin="anonymous" />
+        </div>
+        <div style="flex: 1;">
+          <h1 style="margin: 0 0 8px 0; font-size: 24px; color: #1f2937; line-height: 1.2;">${
+            kandidat.nama
+          }</h1>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 8px;">
+            <div>
+              <p style="margin: 0; color: #6b7280; font-size: 11px;">NIM</p>
+              <p style="margin: 0; font-weight: 600; color: #374151; font-size: 13px;">${
+                kandidat.nim
+              }</p>
+            </div>
+            <div>
+              <p style="margin: 0; color: #6b7280; font-size: 11px;">Semester</p>
+              <p style="margin: 0; font-weight: 600; color: #374151; font-size: 13px;">${
+                kandidat.semester
+              }</p>
+            </div>
+            <div>
+              <p style="margin: 0; color: #6b7280; font-size: 11px;">IPK</p>
+              <p style="margin: 0; font-weight: 600; color: #374151; font-size: 13px;">${kandidat.ipk.toFixed(
+                2
+              )}</p>
+            </div>
+            <div>
+              <p style="margin: 0; color: #6b7280; font-size: 11px;">Jenis Kelamin</p>
+              <p style="margin: 0; font-weight: 600; color: #374151; font-size: 13px;">${
+                kandidat.jenis_kelamin
+              }</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kontak -->
+      <div style="margin-bottom: 12px; padding: 10px; background-color: #f9fafb; border-radius: 6px; border-left: 3px solid #3b82f6;">
+        <h2 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 700; color: #1f2937;">KONTAK</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+          <div>
+            <p style="margin: 0 0 2px 0; color: #6b7280; font-size: 11px;">📧 Email</p>
+            <p style="margin: 0; color: #374151; font-size: 12px; word-break: break-all;">${
+              kandidat.email
+            }</p>
+          </div>
+          <div>
+            <p style="margin: 0 0 2px 0; color: #6b7280; font-size: 11px;">📱 WhatsApp</p>
+            <p style="margin: 0; color: #374151; font-size: 12px;">${
+              kandidat.nomor_wa
+            }</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pengalaman Organisasi -->
+      <div style="margin-bottom: 12px; padding: 10px; background-color: #f9fafb; border-radius: 6px; border-left: 3px solid #3b82f6;">
+        <h2 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 700; color: #1f2937;">PENGALAMAN ORGANISASI</h2>
+        <p style="margin: 0; color: #374151; font-size: 12px; white-space: pre-wrap; line-height: 1.5;">${
+          kandidat.pengalaman
+        }</p>
+      </div>
+
+      <!-- Visi dan Misi -->
+      <div style="margin-bottom: 12px; padding: 10px; background-color: #f9fafb; border-radius: 6px; border-left: 3px solid #3b82f6;">
+        <h2 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 700; color: #1f2937;">VISI DAN MISI</h2>
+        <p style="margin: 0; color: #374151; font-size: 12px; white-space: pre-wrap; line-height: 1.5;">${
+          kandidat.visi_misi
+        }</p>
+      </div>
+
+      <!-- Footer -->
+      <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #e5e7eb; text-align: center;">
+        <p style="margin: 0; color: #9ca3af; font-size: 10px;">Data Kandidat Senat Mahasiswa - Status: ${kandidat.status.toUpperCase()}</p>
+        <p style="margin: 3px 0 0 0; color: #9ca3af; font-size: 10px;">Dibuat pada: ${new Date().toLocaleDateString(
+          "id-ID",
+          {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }
+        )}</p>
+      </div>
+    </div>
+  `;
+
+    document.body.appendChild(pdfContent);
+
+    try {
+      toast.info("Membuat PDF...");
+
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for images to load
+
+      const canvas = await html2canvas(pdfContent, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+        windowWidth: 794, // A4 width in pixels at 96 DPI
+        windowHeight: 1123, // A4 height in pixels at 96 DPI
+      });
+
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+        compress: true,
+      });
+
+      const imgWidth = 210; // A4 width in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const pageHeight = 297; // A4 height in mm
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      // Add first page
+      pdf.addImage(
+        canvas.toDataURL("image/jpeg", 0.95),
+        "JPEG",
+        0,
+        position,
+        imgWidth,
+        imgHeight
+      );
+      heightLeft -= pageHeight;
+
+      // Add additional pages if content is longer than one page
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(
+          canvas.toDataURL("image/jpeg", 0.95),
+          "JPEG",
+          0,
+          position,
+          imgWidth,
+          imgHeight
+        );
+        heightLeft -= pageHeight;
+      }
+
+      const fileName = `Data_${kandidat.nama.replace(/\s+/g, "_")}_${
+        kandidat.nim
+      }.pdf`;
+      pdf.save(fileName);
+
+      toast.success("PDF berhasil diunduh!");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast.error("Gagal membuat PDF. Pastikan semua gambar dapat diakses.");
+    } finally {
+      document.body.removeChild(pdfContent);
+    }
+  };
 
   const fetchKandidat = async () => {
     const { data, error } = await supabase
@@ -351,10 +530,16 @@ const AdminKandidatDetail = () => {
                 </Button>
               </div>
             ) : (
-              <Button onClick={handleEditToggle} variant="outline">
-                <Edit className="w-4 h-4 mr-2" />
-                Edit Data
-              </Button>
+              <div className="flex gap-2">
+                <Button onClick={generatePDF} variant="default">
+                  <Download className="w-4 h-4 mr-2" />
+                  Export PDF
+                </Button>
+                <Button onClick={handleEditToggle} variant="outline">
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit Data
+                </Button>
+              </div>
             )}
           </div>
 
